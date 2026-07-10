@@ -1,109 +1,170 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Flappy Orange</title>
-    <style>
-        body { text-align: center; background: #333; color: white; font-family: sans-serif; }
-        canvas { border: 5px solid #ff9900; background: #87CEEB; display: block; margin: 20px auto; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HKTAYY3 English Week Minigames</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0c20 0%, #15102a 50%, #060409 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(45deg, #ff007f, #7f00ff, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      filter: drop-shadow(0 2px 8px rgba(127, 0, 255, 0.3));
+    }
+    p.subtitle {
+      color: #a0aec0;
+      font-size: 1.1rem;
+    }
+    .arcade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 1rem;
+    }
+    .game-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      backdrop-filter: blur(10px);
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.07);
+      border-color: #7f00ff;
+      box-shadow: 0 10px 25px rgba(127, 0, 255, 0.2);
+    }
+    .game-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+    .game-card:hover .game-icon {
+      transform: scale(1.15) rotate(5deg);
+    }
+    .game-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .play-btn {
+      margin-top: auto;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #00f0ff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-top: 0.5rem;
+    }
+    .game-card:hover .play-btn {
+      color: #ff007f;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      .arcade-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Flappy Orange</h1>
-    <p>Press <strong>SPACE</strong> or <strong>CLICK</strong> to Jump!</p>
-    <canvas id="gameCanvas" width="400" height="500"></canvas>
 
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
+  <header>
+    <h1>HKTAYY3 English Week</h1>
+    <p class="subtitle">🚀 Vibe Coding Minigames Arcade 🕹️</p>
+  </header>
 
-        // Game Variables
-        let orangeY = 250;
-        let orangeX = 50;
-        let velocity = 0;
-        let gravity = 0.25; // How fast the orange falls
-        let lift = -5;      // How high the orange jumps
-        let score = 0;
-        let pipes = [];
-        let frameCount = 0;
+  <main class="arcade-grid">
 
-        function setupPipe() {
-            let gap = 150;
-            let minHeight = 50;
-            let maxHeight = canvas.height - gap - minHeight;
-            let height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-            pipes.push({ x: canvas.width, top: height, bottom: canvas.height - height - gap });
-        }
+    <!-- Restored your exact working paths with spaces -->
+    
+    <a href="connect four/" class="game-card">
+      <div class="game-icon">🔴</div>
+      <div class="game-title">Connect Four</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-        function draw() {
-            // Clear Screen
-            ctx.fillStyle = "#87CEEB"; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+    <a href="flappy orange/" class="game-card">
+      <div class="game-icon">🍊</div>
+      <div class="game-title">Flappy Orange</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-            // Orange Physics
-            velocity += gravity;
-            orangeY += velocity;
+    <a href="skyscraper_tetris/skyscraper_tetris.html" class="game-card">
+      <div class="game-icon">🏢</div>
+      <div class="game-title">Skyscraper Tetris</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-            // Draw Orange (The Character)
-            ctx.fillStyle = "#FFA500"; // Orange color
-            ctx.beginPath();
-            ctx.arc(orangeX, orangeY, 15, 0, Math.PI * 2);
-            ctx.fill();
-            // Add a little green leaf
-            ctx.fillStyle = "green";
-            ctx.fillRect(orangeX - 2, orangeY - 20, 4, 8);
+    <a href="sports_ball_slasher/sports_ball_slasher.html" class="game-card">
+      <div class="game-icon">⚔️</div>
+      <div class="game-title">Sports Ball Slasher</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-            // Handle Pipes (Obstacles)
-            if (frameCount % 100 === 0) setupPipe();
-            
-            for (let i = pipes.length - 1; i >= 0; i--) {
-                pipes[i].x -= 2; // Move pipe left
+    <a href="sports_spinner/sports_spinner.html" class="game-card">
+      <div class="game-icon">🏀</div>
+      <div class="game-title">Sports Spinner</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-                // Draw Top Pipe (Juicer)
-                ctx.fillStyle = "#777";
-                ctx.fillRect(pipes[i].x, 0, 40, pipes[i].top);
-                
-                // Draw Bottom Pipe (Juicer)
-                ctx.fillRect(pipes[i].x, canvas.height - pipes[i].bottom, 40, pipes[i].bottom);
+    <a href="subway_cat_run/subway_cat_run.html" class="game-card">
+      <div class="game-icon">🐱</div>
+      <div class="game-title">Subway Cat Run</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-                // Collision Detection
-                if (orangeX + 15 > pipes[i].x && orangeX - 15 < pipes[i].x + 40) {
-                    if (orangeY - 15 < pipes[i].top || orangeY + 15 > canvas.height - pipes[i].bottom) {
-                        resetGame();
-                    }
-                }
+    <a href="synonym memory match/synonym memory match.html" class="game-card">
+      <div class="game-icon">🧠</div>
+      <div class="game-title">Synonym Match</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-                // Score Point
-                if (pipes[i].x === 10) score++;
+    <a href="tictactoe/tictactoe.html" class="game-card">
+      <div class="game-icon">❌</div>
+      <div class="game-title">Tic Tac Toe</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-                // Remove off-screen pipes
-                if (pipes[i].x < -40) pipes.splice(i, 1);
-            }
+    <a href="word unscramble/word unscramble.html" class="game-card">
+      <div class="game-icon">🔤</div>
+      <div class="game-title">Word Unscramble</div>
+      <div class="play-btn">Insert Coin</div>
+    </a>
 
-            // Ground/Ceiling Death
-            if (orangeY > canvas.height || orangeY < 0) resetGame();
+  </main>
 
-            // UI
-            ctx.fillStyle = "black";
-            ctx.font = "20px Arial";
-            ctx.fillText("Score: " + score, 10, 25);
-
-            frameCount++;
-            requestAnimationFrame(draw);
-        }
-
-        function resetGame() {
-            orangeY = 250;
-            velocity = 0;
-            pipes = [];
-            score = 0;
-            frameCount = 0;
-        }
-
-        // Controls
-        window.addEventListener("keydown", (e) => { if(e.code === "Space") velocity = lift; });
-        canvas.addEventListener("mousedown", () => { velocity = lift; });
-
-        draw();
-    </script>
 </body>
 </html>

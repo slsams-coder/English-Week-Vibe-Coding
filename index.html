@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HKTAYY3 English Week Minigames</title>
   <style>
-    /* Reset & Base Styles */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -21,8 +20,6 @@
       flex-direction: column;
       align-items: center;
     }
-
-    /* Header Container */
     header {
       text-align: center;
       margin-bottom: 3rem;
@@ -42,10 +39,7 @@
     p.subtitle {
       color: #a0aec0;
       font-size: 1.1rem;
-      font-weight: 400;
     }
-
-    /* Games Grid Layout */
     .arcade-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -54,8 +48,6 @@
       max-width: 1200px;
       padding: 0 1rem;
     }
-
-    /* Game Card Styles */
     .game-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -69,33 +61,13 @@
       text-align: center;
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
     }
-
-    /* Subtle glow behind card on hover */
-    .game-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
-    }
-
-    .game-card:hover::before {
-      transform: translateX(100%);
-    }
-
     .game-card:hover {
       transform: translateY(-5px);
       background: rgba(255, 255, 255, 0.07);
       border-color: #7f00ff;
-      box-shadow: 0 10px 25px rgba(127, 0, 255, 0.2), 
-                  0 0 10px rgba(0, 240, 255, 0.1);
+      box-shadow: 0 10px 25px rgba(127, 0, 255, 0.2);
     }
-
-    /* Game Icon (Emoji) */
     .game-icon {
       font-size: 3rem;
       margin-bottom: 1rem;
@@ -104,16 +76,11 @@
     .game-card:hover .game-icon {
       transform: scale(1.15) rotate(5deg);
     }
-
-    /* Game Title */
     .game-title {
       font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      color: #fff;
     }
-
-    /* Action Button Text inside card */
     .play-btn {
       margin-top: auto;
       font-size: 0.9rem;
@@ -126,8 +93,6 @@
     .game-card:hover .play-btn {
       color: #ff007f;
     }
-
-    /* Responsive adjustments */
     @media (max-width: 600px) {
       h1 { font-size: 2rem; }
       .arcade-grid { grid-template-columns: 1fr; }
@@ -143,63 +108,54 @@
 
   <main class="arcade-grid">
 
-    <!-- Card 1 -->
-    <a href="connect_four/" class="game-card">
+    <a href="connect_four/connect_four.html" class="game-card">
       <div class="game-icon">🔴</div>
       <div class="game-title">Connect Four</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 2 -->
-    <a href="flappy_orange/" class="game-card">
+    <a href="flappy_orange/flappy_orange.html" class="game-card">
       <div class="game-icon">🍊</div>
       <div class="game-title">Flappy Orange</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 3 -->
     <a href="skyscraper_tetris/skyscraper_tetris.html" class="game-card">
       <div class="game-icon">🏢</div>
       <div class="game-title">Skyscraper Tetris</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 4 -->
     <a href="sports_ball_slasher/sports_ball_slasher.html" class="game-card">
       <div class="game-icon">⚔️</div>
       <div class="game-title">Sports Ball Slasher</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 5 -->
     <a href="sports_spinner/sports_spinner.html" class="game-card">
       <div class="game-icon">🏀</div>
       <div class="game-title">Sports Spinner</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 6 -->
     <a href="subway_cat_run/subway_cat_run.html" class="game-card">
       <div class="game-icon">🐱</div>
       <div class="game-title">Subway Cat Run</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 7 -->
     <a href="synonym_memory_match/synonym_memory_match.html" class="game-card">
       <div class="game-icon">🧠</div>
       <div class="game-title">Synonym Match</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 8 -->
     <a href="tictactoe/tictactoe.html" class="game-card">
       <div class="game-icon">❌</div>
       <div class="game-title">Tic Tac Toe</div>
       <div class="play-btn">Insert Coin</div>
     </a>
 
-    <!-- Card 9 -->
     <a href="word_unscramble/word_unscramble.html" class="game-card">
       <div class="game-icon">🔤</div>
       <div class="game-title">Word Unscramble</div>

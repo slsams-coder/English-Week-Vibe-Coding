@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Scramble</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; background-color: #e9ecef; }
+  .container { background: white; max-width: 400px; margin: auto; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+  #scrambled { font-size: 2rem; letter-spacing: 5px; font-weight: bold; margin-bottom: 20px; color: #007bff; }
+  input { padding: 10px; width: 80%; font-size: 1.2rem; text-align: center; margin-bottom: 15px; }
+  button { padding: 10px 20px; background: #28a745; color: white; border: none; font-size: 1rem; border-radius: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Word Scramble</h2>
+    <div id="scrambled"></div>
+    <input type="text" id="guess" placeholder="Unscramble the word" autocomplete="off">
+    <br>
+    <button onclick="checkGuess()">Submit</button>
+    <p id="feedback"></p>
+    <button onclick="nextWord()" style="background:#007bff; margin-top:10px;">Next Word</button>
+  </div>
+
+  <script>
+    const words = ["ELEPHANT", "ADVENTURE", "LIBRARY", "COMPUTER", "BICYCLE"];
+    let currentWord = "";
+
+    function scramble(word) {
+      return word.split('').sort(() => 0.5 - Math.random()).join('');
+    }
+
+    function nextWord() {
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      document.getElementById('scrambled').innerText = scramble(currentWord);
+      document.getElementById('guess').value = "";
+      document.getElementById('feedback').innerText = "";
+    }
+
+    function checkGuess() {
+      const guess = document.getElementById('guess').value.toUpperCase();
+      const feedback = document.getElementById('feedback');
+      if (guess === currentWord) {
+        feedback.innerText = "Correct! Great job!";
+        feedback.style.color = "green";
+      } else {
+        feedback.innerText = "Incorrect. Try again!";
+        feedback.style.color = "red";
+      }
+    }
+
+    // Initialize first word
+    nextWord();
+  </script>
+</body>
+</html>

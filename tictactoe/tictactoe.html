@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Tic-Tac-Toe</title>
+<style>
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f9f9f9; }
+  h1 { color: #333; }
+  #status { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; color: #555; }
+  .board { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin-bottom: 20px; }
+  
+  .cell { width: 100px; height: 100px; background-color: #fff; border: 2px solid #ccc; display: flex; justify-content: center; align-items: center; font-size: 3rem; font-weight: bold; cursor: pointer; color: #333; transition: all 0.2s ease-in-out; }
+  .cell:hover { background-color: #f0f0f0; }
+  
+  /* New class to highlight the winning line */
+  .cell.win { background-color: #28a745; color: white; border-color: #28a745; }
+  
+  button { padding: 10px 20px; font-size: 1.2rem; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  button:hover { background-color: #0056b3; }
+</style>
+</head>
+<body>
+  <h1>Tic-Tac-Toe</h1>
+  <div id="status">Player X's turn</div>
+  
+  <div class="board" id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+
+  <button onclick="resetGame()">Restart Game</button>
+
+  <script>
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let gameActive = true;
+    
+    const statusDisplay = document.getElementById('status');
+    const cells = document.querySelectorAll('.cell');
+    const winningConditions = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ];
+
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+
+    function handleCellClick(event) {
+      const clickedCell = event.target;
+      const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+      if (board[clickedCellIndex] !== '' || !gameActive) return;
+
+      board[clickedCellIndex] = currentPlayer;
+      clickedCell.innerHTML = currentPlayer;
+      
+      checkWinCondition();
+    }
+
+    function checkWinCondition() {
+      let roundWon = false;
+      let winningCells = []; // Keep track of the cells that form the winning line
+
+      for (let i = 0; i <= 7; i++) {
+        const winCondition = winningConditions[i];
+        let a = board[winCondition[0]], b = board[winCondition[1]], c = board[winCondition[2]];
+        
+        if (a === '' || b === '' || c === '') continue;
+        
+        if (a === b && b === c) { 
+          roundWon = true; 
+          winningCells = winCondition; // Save the winning combination
+          break; 
+        }
+      }
+
+      if (roundWon) {
+        statusDisplay.innerHTML = `Player ${currentPlayer} has won!`;
+        gameActive = false;
+        
+        // Add the 'win' class to the three winning cells
+        winningCells.forEach(index => {
+          cells[index].classList.add('win');
+        });
+        
+        return;
+      }
+
+      if (!board.includes('')) {
+        statusDisplay.innerHTML = 'Game ended in a draw!';
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      statusDisplay.innerHTML = `Player ${currentPlayer}'s turn`;
+    }
+
+    function resetGame() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      gameActive = true;
+      statusDisplay.innerHTML = `Player ${currentPlayer}'s turn`;
+      
+      // Clear the text and remove the winning line highlight
+      cells.forEach(cell => {
+        cell.innerHTML = '';
+        cell.classList.remove('win');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Connect Four</title>
+<style>
+  body { 
+    font-family: Arial, sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh; 
+    margin: 0; 
+    background-color: #f9f9f9; 
+    transition: background-color 0.5s ease; /* Smooth transition for background */
+  }
+  
+  h1 { color: #333; margin-bottom: 10px; }
+  
+  #status { 
+    font-size: 1.5rem; 
+    margin-bottom: 20px; 
+    font-weight: bold; 
+    color: #ff4136; 
+  }
+  
+  .board { 
+    display: grid; 
+    grid-template-columns: repeat(7, 60px); 
+    grid-template-rows: repeat(6, 60px); 
+    gap: 8px; 
+    background-color: #007bff; 
+    padding: 10px; 
+    border-radius: 10px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    position: relative; /* ensure pieces don't bleed out during win animation scale */
+  }
+  
+  .cell { 
+    width: 60px; 
+    height: 60px; 
+    background-color: #fff; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.3); 
+    position: relative; 
+  }
+
+  .piece {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3);
+    pointer-events: none; 
+    transition: opacity 0.5s ease, transform 0.5s ease; /* smooth transition when game ends */
+  }
+
+  .piece.red { background-color: #ff4136; }
+  .piece.yellow { background-color: #ffdc00; }
+
+  /* --- FLASHING EFFECT FOR WINNING PIECES --- */
+  @keyframes winningFlash {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 15px white, inset 0 -3px 5px rgba(0,0,0,0.3); 
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.1); 
+        box-shadow: 0 0 25px white, inset 0 -3px 5px rgba(0,0,0,0.3); 
+        opacity: 0.7; /* adds slight flash effect alongside glow */
+    }
+  }
+
+  .winning-piece {
+    animation: winningFlash 0.5s ease infinite !important;
+    z-index: 10; /* ensure winning pieces are on top */
+  }
+
+  /* --- TRANSPARENCY EFFECT WHEN GAME IS OVER --- */
+  /* Dim all pieces generally */
+  body.game-over .piece {
+    opacity: 0.3;
+  }
+  
+  /* Reset winning pieces so they stay bright and flash */
+  body.game-over .piece.winning-piece {
+    opacity: 1;
+  }
+  
+  button { 
+    padding: 10px 20px; 
+    font-size: 1.2rem; 
+    background-color: #333; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+  }
+  
+  button:hover { background-color: #555; }
+</style>
+</head>
+<body>
+  <h1>Connect Four</h1>
+  <div id="status">Player Red's turn</div>
+  <div class="board" id="board"></div>
+  <button onclick="resetGame()">Restart Game</button>
+
+  <script>
+    const ROWS = 6, COLS = 7;
+    let boardState = [];
+    let currentPlayer = 'red';
+    let gameActive = true;
+    
+    const boardElement = document.getElementById('board');
+    const statusDisplay = document.getElementById('status');
+
+    function initGame() {
+      // Clear board array state
+      boardState = Array(ROWS).fill().map(() => Array(COLS).fill(''));
+      // Clear visual board
+      boardElement.innerHTML = '';
+      gameActive = true;
+      currentPlayer = 'red';
+      
+      // Reset body class (remove transparency effect)
+      document.body.classList.remove('game-over');
+      
+      updateStatusDisplay();
+
+      // Create cell elements
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = document.createElement('div');
+          cell.classList.add('cell');
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          // IMPORTANT: Capture 'c' in the closure so clicking cell clicks correct column
+          cell.addEventListener('click', (event) => {
+              // Ignore clicks outside actual cells
+              if (event.target.classList.contains('cell')) {
+                handleColumnClick(c);
+              } else if (event.target.parentElement.classList.contains('cell')) {
+                handleColumnClick(c);
+              }
+          });
+          boardElement.appendChild(cell);
+        }
+      }
+    }
+
+    function handleColumnClick(col) {
+      if (!gameActive) return;
+
+      // Logic to find lowest empty row remains same
+      let emptyRow = -1;
+      for (let r = ROWS - 1; r >= 0; r--) {
+        if (boardState[r][col] === '') { emptyRow = r; break; }
+      }
+
+      if (emptyRow === -1) return;
+
+      // Update backend state
+      boardState[emptyRow][col] = currentPlayer;
+      
+      // Update visual board
+      const cell = document.querySelector(`.cell[data-row="${emptyRow}"][data-col="${col}"]`);
+      
+      const piece = document.createElement('div');
+      piece.classList.add('piece', currentPlayer);
+      cell.appendChild(piece);
+
+      // JavaScript animation continues to ensure compatibility
+      const dropDistance = (emptyRow + 1) * 68 + 20; 
+      piece.animate([
+        { transform: `translateY(-${dropDistance}px)` },
+        { transform: 'translateY(0)', offset: 0.7 },
+        { transform: 'translateY(-12px)', offset: 0.85 },
+        { transform: 'translateY(0)' }
+      ], {
+        duration: 500,
+        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        fill: 'forwards'
+      });
+
+      // --- CRUCIAL CHANGE HERE: identify exact winning pieces ---
+      const winningLine = getWinningLine(emptyRow, col);
+      
+      if (winningLine) {
+        statusDisplay.innerHTML = `Player ${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)} wins!`;
+        statusDisplay.style.color = currentPlayer === 'red' ? '#ff4136' : '#d4b700';
+        gameActive = false;
+        
+        // APPLY WINNING EFFECTS
+        applyWinEffects(winningLine);
+        return;
+      }
+
+      if (!boardState[0].includes('')) {
+        statusDisplay.innerHTML = "It's a draw!";
+        statusDisplay.style.color = '#333';
+        gameActive = false;
+        // Optional: you could dim all pieces on draw too
+        document.body.classList.add('game-over');
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+      updateStatusDisplay();
+    }
+
+    function updateStatusDisplay() {
+      const playerText = currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1);
+      statusDisplay.innerHTML = `Player ${playerText}'s turn`;
+      statusDisplay.style.color = currentPlayer === 'red' ? '#ff4136' : '#d4b700';
+    }
+
+    // Identifies exactly which four pieces form the win
+    function getWinningLine(row, col) {
+      const directions = [
+        [0, 1],  // Horizontal
+        [1, 0],  // Vertical
+        [1, 1],  // Diagonal down-right
+        [1, -1]  // Diagonal down-left
+      ];
+
+      for (let dir of directions) {
+        const winningCoords = [{r: row, c: col}];
+        
+        // Count positive direction and capture coordinates
+        collectCoords(row, col, dir[0], dir[1], winningCoords);
+        // Count negative direction and capture coordinates
+        collectCoords(row, col, -dir[0], -dir[1], winningCoords);
+        
+        // If 4 or more, we have a winner and know exactly which pieces
+        if (winningCoords.length >= 4) {
+          return winningCoords;
+        }
+      }
+      return null;
+    }
+
+    // Helper function to capture winning piece coordinates
+    function collectCoords(startR, startC, rStep, cStep, coordsArray) {
+      let currR = startR + rStep, currC = startC + cStep;
+      while (currR >= 0 && currR < ROWS && currC >= 0 && currC < COLS && boardState[currR][currC] === currentPlayer) {
+        coordsArray.push({r: currR, c: currC});
+        currR += rStep; currC += cStep;
+      }
+    }
+
+    // Applies CSS classes for flashing and general dimming
+    function applyWinEffects(winningLineCoords) {
+        // 1. Add class to body to trigger general dimming
+        document.body.classList.add('game-over');
+        
+        // 2. Loop through the specific coordinates that won and target their visual piece element
+        winningLineCoords.forEach(coord => {
+            const cell = document.querySelector(`.cell[data-row="${coord.r}"][data-col="${coord.c}"]`);
+            if (cell && cell.firstChild) {
+                // Add class to trigger flashing animation on piece
+                cell.firstChild.classList.add('winning-piece');
+            }
+        });
+    }
+
+    function resetGame() { initGame(); }
+    
+    // Start game on load
+    initGame();
+  </script>
+</body>
+</html>

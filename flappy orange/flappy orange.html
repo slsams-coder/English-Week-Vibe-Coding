@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flappy Orange</title>
+    <style>
+        body { text-align: center; background: #333; color: white; font-family: sans-serif; }
+        canvas { border: 5px solid #ff9900; background: #87CEEB; display: block; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <h1>Flappy Orange</h1>
+    <p>Press <strong>SPACE</strong> or <strong>CLICK</strong> to Jump!</p>
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Game Variables
+        let orangeY = 250;
+        let orangeX = 50;
+        let velocity = 0;
+        let gravity = 0.25; // How fast the orange falls
+        let lift = -5;      // How high the orange jumps
+        let score = 0;
+        let pipes = [];
+        let frameCount = 0;
+
+        function setupPipe() {
+            let gap = 150;
+            let minHeight = 50;
+            let maxHeight = canvas.height - gap - minHeight;
+            let height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            pipes.push({ x: canvas.width, top: height, bottom: canvas.height - height - gap });
+        }
+
+        function draw() {
+            // Clear Screen
+            ctx.fillStyle = "#87CEEB"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Orange Physics
+            velocity += gravity;
+            orangeY += velocity;
+
+            // Draw Orange (The Character)
+            ctx.fillStyle = "#FFA500"; // Orange color
+            ctx.beginPath();
+            ctx.arc(orangeX, orangeY, 15, 0, Math.PI * 2);
+            ctx.fill();
+            // Add a little green leaf
+            ctx.fillStyle = "green";
+            ctx.fillRect(orangeX - 2, orangeY - 20, 4, 8);
+
+            // Handle Pipes (Obstacles)
+            if (frameCount % 100 === 0) setupPipe();
+            
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].x -= 2; // Move pipe left
+
+                // Draw Top Pipe (Juicer)
+                ctx.fillStyle = "#777";
+                ctx.fillRect(pipes[i].x, 0, 40, pipes[i].top);
+                
+                // Draw Bottom Pipe (Juicer)
+                ctx.fillRect(pipes[i].x, canvas.height - pipes[i].bottom, 40, pipes[i].bottom);
+
+                // Collision Detection
+                if (orangeX + 15 > pipes[i].x && orangeX - 15 < pipes[i].x + 40) {
+                    if (orangeY - 15 < pipes[i].top || orangeY + 15 > canvas.height - pipes[i].bottom) {
+                        resetGame();
+                    }
+                }
+
+                // Score Point
+                if (pipes[i].x === 10) score++;
+
+                // Remove off-screen pipes
+                if (pipes[i].x < -40) pipes.splice(i, 1);
+            }
+
+            // Ground/Ceiling Death
+            if (orangeY > canvas.height || orangeY < 0) resetGame();
+
+            // UI
+            ctx.fillStyle = "black";
+            ctx.font = "20px Arial";
+            ctx.fillText("Score: " + score, 10, 25);
+
+            frameCount++;
+            requestAnimationFrame(draw);
+        }
+
+        function resetGame() {
+            orangeY = 250;
+            velocity = 0;
+            pipes = [];
+            score = 0;
+            frameCount = 0;
+        }
+
+        // Controls
+        window.addEventListener("keydown", (e) => { if(e.code === "Space") velocity = lift; });
+        canvas.addEventListener("mousedown", () => { velocity = lift; });
+
+        draw();
+    </script>
+</body>
+</html>
